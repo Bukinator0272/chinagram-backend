@@ -1,7 +1,5 @@
 package ru.netcracker.chinagram.model;
 
-import lombok.Data;
-
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.util.Date;

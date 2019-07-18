@@ -1,6 +1,5 @@
 package ru.netcracker.chinagram.model;
 
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -11,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 public class User extends AbstractEntity {
 
-    public User(String username, String password, String info){
+    public User(String username, String password, String info) {
         this.username = username;
         this.password = password;
         this.information = info;
@@ -23,11 +22,12 @@ public class User extends AbstractEntity {
 
     private String information;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     List<Photo> photos = new ArrayList<>();
 
     @ManyToMany
-    private List<User> followers  = new ArrayList<>();
+    private List<User> followers = new ArrayList<>();
+
 
     @ManyToMany(fetch = FetchType.EAGER, targetEntity = User.class)
     @JoinTable(name = "user_followers",
@@ -36,10 +36,10 @@ public class User extends AbstractEntity {
     private List<User> following = new ArrayList<>();
 
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     List<ChinaLike> likes = new ArrayList<>();
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     List<Comment> comments = new ArrayList<>();
 
 
@@ -50,7 +50,6 @@ public class User extends AbstractEntity {
     public void setUsername(String username) {
         this.username = username;
     }
-
 
 
     public String getPassword() {
@@ -84,6 +83,14 @@ public class User extends AbstractEntity {
 
     public void setInformation(String information) {
         this.information = information;
+    }
+
+    public List<Photo> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<Photo> photos) {
+        this.photos = photos;
     }
 
 

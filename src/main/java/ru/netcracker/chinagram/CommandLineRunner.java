@@ -25,6 +25,10 @@ public class CommandLineRunner implements org.springframework.boot.CommandLineRu
     public void run(String... arg0) {
         User user1 = new User("Ivan", "123", "информация1");
         User user2 = new User("Vasia", "1234", "информация2");
+        Photo photo = new Photo();
+        photo.setUser(user1);
+        photo.setImage("dsd");
+        user1.getPhotos().add(photo);
         userRepository.save(user1);
         userRepository.save(user2);
     }
