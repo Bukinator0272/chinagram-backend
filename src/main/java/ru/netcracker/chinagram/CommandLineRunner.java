@@ -2,11 +2,8 @@ package ru.netcracker.chinagram;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.netcracker.chinagram.model.Comment;
 import ru.netcracker.chinagram.model.Photo;
 import ru.netcracker.chinagram.model.User;
-import ru.netcracker.chinagram.repositories.CommentRepository;
-import ru.netcracker.chinagram.repositories.PhotoRepository;
 import ru.netcracker.chinagram.repositories.UserRepository;
 
 @Component
@@ -14,12 +11,6 @@ public class CommandLineRunner implements org.springframework.boot.CommandLineRu
 
     @Autowired
     UserRepository userRepository;
-
-    @Autowired
-    PhotoRepository photoRepository;
-
-    @Autowired
-    CommentRepository commentRepository;
 
     @Override
     public void run(String... arg0) {
