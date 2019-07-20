@@ -3,10 +3,7 @@ package ru.netcracker.chinagram.model;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,14 +14,16 @@ public class Photo extends AbstractEntity {
 
     private String image;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     private User user;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "photo_id")
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<ChinaLike> likes = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "photo_id")
+    private List<Like> likes = new ArrayList<>();
 
 
     public String getImage() {
@@ -51,11 +50,11 @@ public class Photo extends AbstractEntity {
         this.comments = comments;
     }
 
-    public List<ChinaLike> getLikes() {
+    public List<Like> getLikes() {
         return likes;
     }
 
-    public void setLikes(List<ChinaLike> likes) {
+    public void setLikes(List<Like> likes) {
         this.likes = likes;
     }
 

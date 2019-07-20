@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 
 @Entity
@@ -14,10 +15,10 @@ public class Comment extends AbstractEntity {
 
     private String content;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     private Photo photo;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     private User user;
 
     public String getContent() {

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table (name = "china_user")
 @NoArgsConstructor
 public class User extends AbstractEntity {
 
@@ -22,24 +23,27 @@ public class User extends AbstractEntity {
 
     private String information;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
     List<Photo> photos = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<User> followers = new ArrayList<>();
 
 
     @ManyToMany(fetch = FetchType.EAGER, targetEntity = User.class)
-    @JoinTable(name = "user_followers",
+    @JoinTable(name = "china_user_followers",
             joinColumns = @JoinColumn(name = "followers_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> following = new ArrayList<>();
 
 
-    @OneToMany(cascade = CascadeType.ALL)
-    List<ChinaLike> likes = new ArrayList<>();
+    @OneToMany( cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    List<Like> likes = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
     List<Comment> comments = new ArrayList<>();
 
 

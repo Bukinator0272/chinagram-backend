@@ -9,32 +9,31 @@ import ru.netcracker.chinagram.repositories.ChinaDAO;
 import java.util.UUID;
 
 @RestController
-public class TestController {
+public class UserController {
 
     @Autowired
     ChinaDAO chinaDAO;
 
     @GetMapping(path = "/users/{id}")
     public User getUser(@PathVariable String id) throws UserNotFoundException {
-       return chinaDAO.get(User.class, UUID.fromString(id));
+        return chinaDAO.get(User.class, UUID.fromString(id));
     }
 
     @GetMapping(path = "/usernames/{username}")
-    public User getUserByName(@PathVariable String username)   {
+    public User getUserByName(@PathVariable String username) {
         return chinaDAO.get(User.class, "username", username);
     }
 
     @PostMapping("/users")
-    public User createUser(@RequestBody User user){
-         chinaDAO.persist(user);
-         return user;
+    public User createUser(@RequestBody User user) {
+        chinaDAO.persist(user);
+        return user;
     }
 
     @DeleteMapping("/users/remove")
-    public void removeUser(@RequestBody User user){
+    public void removeUser(@RequestBody User user) {
         chinaDAO.remove(user);
     }
-
 
 
 }

@@ -9,13 +9,15 @@ import java.util.UUID;
 
 
 @Entity
+@Table(name = "china_like")
 @AllArgsConstructor
-public class ChinaLike extends AbstractEntity {
+@NoArgsConstructor
+public class Like extends AbstractEntity {
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     private Photo photo;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     private User user;
 
 
