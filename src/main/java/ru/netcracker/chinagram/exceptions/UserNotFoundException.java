@@ -1,4 +1,4 @@
-package ru.netcracker.chinagram.Exceptions;
+package ru.netcracker.chinagram.exceptions;
 
 public class UserNotFoundException extends RuntimeException {
    public UserNotFoundException(String id) {

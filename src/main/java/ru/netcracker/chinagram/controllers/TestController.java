@@ -2,9 +2,9 @@ package ru.netcracker.chinagram.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.netcracker.chinagram.Exceptions.UserNotFoundException;
+import ru.netcracker.chinagram.exceptions.UserNotFoundException;
 import ru.netcracker.chinagram.model.User;
-import ru.netcracker.chinagram.repositories.UserRepository;
+import ru.netcracker.chinagram.repositories.ChinaDAO;
 
 import java.util.UUID;
 
@@ -12,16 +12,23 @@ import java.util.UUID;
 public class TestController {
 
     @Autowired
-    UserRepository userRepository;
+    ChinaDAO chinaDAO;
 
     @GetMapping(path = "/users/{id}")
     public User getUser(@PathVariable String id) throws UserNotFoundException {
-       return userRepository.findById(UUID.fromString(id)).orElseThrow(() -> new UserNotFoundException(id));
+       return chinaDAO.get(User.class, UUID.fromString(id));
     }
 
+    @GetMapping(path = "/usernames/{username}")
+    public User getUserByName(@PathVariable String username)   {
+        return chinaDAO.get(User.class, "username", username);
+    }
 
     @PostMapping("/users")
     public User createUser(@RequestBody User user){
-        return userRepository.save(user);
+         chinaDAO.persist(user);
+         return user;
     }
+
+
 }
