@@ -30,5 +30,11 @@ public class TestController {
          return user;
     }
 
+    @DeleteMapping("/users/remove")
+    public void removeUser(@RequestBody User user){
+        chinaDAO.remove(user);
+    }
+
+
 
 }
