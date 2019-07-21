@@ -9,6 +9,8 @@ import ru.netcracker.chinagram.model.User;
 import ru.netcracker.chinagram.repositories.ChinaDAO;
 import ru.netcracker.chinagram.repositories.UserRepository;
 
+import java.util.Random;
+
 @Component
 public class CommandLineRunner implements org.springframework.boot.CommandLineRunner {
 
@@ -21,8 +23,14 @@ public class CommandLineRunner implements org.springframework.boot.CommandLineRu
 
     @Override
     public void run(String... arg0) {
-        User user1 = new User("Ivan", "123", "информация1");
-        User user2 = new User("Vasia", "1234", "информация2");
+        String[] array = {"Vasia_", "Ivan_", "Misha_", "Petr_", "Innokentiy_"};
+        Random r = new Random();
+
+        User user1 = new User(array[r.nextInt(3)] + r.nextInt(1000),
+                "123", "информация");
+
+        User user2 = new User(array[r.nextInt(3)] + r.nextInt(1000),
+                "123", "информация");
 
         Photo photo = new Photo();
         photo.setUser(user1);
