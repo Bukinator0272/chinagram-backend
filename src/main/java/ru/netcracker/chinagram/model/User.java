@@ -87,10 +87,10 @@ public class User extends AbstractEntity {
         this.following = following;
     }
 
-    @JsonIgnore
+
     public String getInformation() {
         return information;
-    }
+    } //@JsonIgnore здесь не нужен (наверное)
 
     public void setInformation(String information) {
         this.information = information;

@@ -1,6 +1,8 @@
 package ru.netcracker.chinagram.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.netcracker.chinagram.exceptions.UserNotFoundException;
 import ru.netcracker.chinagram.model.User;
@@ -15,29 +17,33 @@ public class UserController {
     ChinaDAO chinaDAO;
 
     @GetMapping(path = "/users/{id}")
-    public User getUser(@PathVariable String id) throws UserNotFoundException {
-        return chinaDAO.get(User.class, UUID.fromString(id));
+    public ResponseEntity<User> getUserById(@PathVariable String id) throws UserNotFoundException {
+        User user = chinaDAO.get(User.class, UUID.fromString(id));
+        return new ResponseEntity<User>(user, HttpStatus.OK);
     }
 
     @GetMapping(path = "/usernames/{username}")
-    public User getUserByName(@PathVariable String username) {
-        return chinaDAO.get(User.class, "username", username);
+    public ResponseEntity<User> getUserByName(@PathVariable String username) {
+        User user = chinaDAO.get(User.class, "username", username);
+        return new ResponseEntity<User>(user, HttpStatus.OK);
     }
 
     @PostMapping("/users")
-    public User createUser(@RequestBody User user) {
+    public ResponseEntity<User> createUser(@RequestBody User user) {
         chinaDAO.persist(user);
-        return user;
+        return new ResponseEntity<User>(user, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/users/remove")
-    public void removeUser(@RequestBody User user) {
+    public ResponseEntity<User> removeUser(@RequestBody User user) {//у меня не работает, хз чо делать
         chinaDAO.remove(user);
+        return new ResponseEntity<User>(HttpStatus.GONE);
     }
 
     @DeleteMapping("/users/remove/{id}")
-    public void removeUserById(@PathVariable String id)
-    {   User user = chinaDAO.get(User.class, UUID.fromString(id));
+    public ResponseEntity<User> removeUserById(@PathVariable String id) { //это тоже не работает
+        User user = chinaDAO.get(User.class, UUID.fromString(id));
         chinaDAO.remove(user);
+        return new ResponseEntity<User>(HttpStatus.GONE);
     }
 }
