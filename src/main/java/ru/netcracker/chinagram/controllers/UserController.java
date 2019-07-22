@@ -11,7 +11,7 @@ import ru.netcracker.chinagram.repositories.ChinaDAO;
 import java.util.UUID;
 
 @RestController
-public class UserController {
+public class UserController {//
 
     @Autowired
     ChinaDAO chinaDAO;
