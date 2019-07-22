@@ -35,5 +35,9 @@ public class UserController {
         chinaDAO.remove(user);
     }
 
-
+    @DeleteMapping("/users/remove/{id}")
+    public void removeUserById(@PathVariable String id)
+    {   User user = chinaDAO.get(User.class, UUID.fromString(id));
+        chinaDAO.remove(user);
+    }
 }
