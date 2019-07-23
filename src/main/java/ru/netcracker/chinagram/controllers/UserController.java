@@ -35,13 +35,14 @@ public class UserController {//
     }
 
     @DeleteMapping("/users/remove")
-    public ResponseEntity<User> removeUser(@RequestBody User user) {//у меня не работает, хз чо делать
+    public ResponseEntity<User> removeUser(@RequestBody User user) {//заработало
+        chinaDAO.persist(user);
         chinaDAO.remove(user);
         return new ResponseEntity<User>(HttpStatus.GONE);
     }
 
     @DeleteMapping("/users/remove/{id}")
-    public ResponseEntity<User> removeUserById(@PathVariable String id) { //это тоже не работает
+    public ResponseEntity<User> removeUserById(@PathVariable String id) { //пока не работаетт
         User user = chinaDAO.get(User.class, UUID.fromString(id));
         chinaDAO.remove(user);
         return new ResponseEntity<User>(HttpStatus.GONE);
