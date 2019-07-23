@@ -36,8 +36,8 @@ public class UserController {//
     }
 
     @DeleteMapping("/users/remove")
-    public ResponseEntity<User> removeUser(@RequestBody User user) {//заработалопока не работаетт
-        chinaDAO.persist(user);
+    public ResponseEntity<User> removeUser(@RequestBody User user) {//не работает
+        
         chinaDAO.remove(user);
         return new ResponseEntity<User>(HttpStatus.GONE);
     }
