@@ -25,6 +25,7 @@ public class UserController {//
     @GetMapping(path = "/usernames/{username}")
     public ResponseEntity<User> getUserByName(@PathVariable String username) {
         User user = chinaDAO.get(User.class, "username", username);
+        
         return new ResponseEntity<User>(user, HttpStatus.OK);
     }
 
@@ -35,15 +36,16 @@ public class UserController {//
     }
 
     @DeleteMapping("/users/remove")
-    public ResponseEntity<User> removeUser(@RequestBody User user) {//заработало
+    public ResponseEntity<User> removeUser(@RequestBody User user) {//заработалопока не работаетт
         chinaDAO.persist(user);
         chinaDAO.remove(user);
         return new ResponseEntity<User>(HttpStatus.GONE);
     }
 
     @DeleteMapping("/users/remove/{id}")
-    public ResponseEntity<User> removeUserById(@PathVariable String id) { //пока не работаетт
+    public ResponseEntity<User> removeUserById(@PathVariable String id) { //заработало
         User user = chinaDAO.get(User.class, UUID.fromString(id));
+         chinaDAO.persist(user);
         chinaDAO.remove(user);
         return new ResponseEntity<User>(HttpStatus.GONE);
     }
