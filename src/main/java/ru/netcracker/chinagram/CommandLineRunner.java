@@ -23,7 +23,7 @@ public class CommandLineRunner implements org.springframework.boot.CommandLineRu
 
     @Override
     public void run(String... arg0) {
-        String[] array = {"Vasia_", "Ivan_", "Misha_", "Petr_", "Innokentiy_"};
+       /** String[] array = {"Vasia_", "Ivan_", "Misha_", "Petr_", "Innokentiy_"};
         Random r = new Random();
 
         User user1 = new User(array[r.nextInt(3)] + r.nextInt(1000),
@@ -50,7 +50,7 @@ public class CommandLineRunner implements org.springframework.boot.CommandLineRu
         photo.getComments().add(comment);
         chinaDAO.merge(comment);
 
-
+**/
 
     }
 
