@@ -11,7 +11,7 @@ import ru.netcracker.chinagram.repositories.ChinaDAO;
 import java.util.UUID;
 
 @RestController
-public class UserController {//
+public class UserController {
 
     @Autowired
     ChinaDAO chinaDAO;
@@ -35,18 +35,11 @@ public class UserController {//
         return new ResponseEntity<User>(user, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/users/remove")
-    public ResponseEntity<User> removeUser(@RequestBody User user) {//не работает
-        
+    @DeleteMapping("/users/remove/{id}")
+    public ResponseEntity<User> removeUserById(@PathVariable String id) { //заработало
+        User user = chinaDAO.get(User.class, UUID.fromString(id));
         chinaDAO.remove(user);
         return new ResponseEntity<User>(HttpStatus.GONE);
     }
 
-    @DeleteMapping("/users/remove/{id}")
-    public ResponseEntity<User> removeUserById(@PathVariable String id) { //заработало
-        User user = chinaDAO.get(User.class, UUID.fromString(id));
-         chinaDAO.persist(user);
-        chinaDAO.remove(user);
-        return new ResponseEntity<User>(HttpStatus.GONE);
-    }
 }
