@@ -2,6 +2,7 @@ package ru.netcracker.chinagram.model;
 
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.UUID;
 
@@ -14,8 +15,10 @@ public abstract class AbstractEntity {
     }
 
     @Id
+    @NotNull
     protected UUID id;
 
+    @NotNull
     protected Date date;
 
     public UUID getId() {

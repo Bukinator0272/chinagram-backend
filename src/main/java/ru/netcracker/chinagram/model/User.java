@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,8 +19,11 @@ public class User extends AbstractEntity {
         this.information = info;
     }
 
+    @Column(unique = true)
+    @NotNull
     private String username;
 
+    @NotNull
     private String password;
 
     private String information;
@@ -31,7 +35,7 @@ public class User extends AbstractEntity {
     @ManyToMany(fetch = FetchType.LAZY)
     private List<User> followers = new ArrayList<>();
 
-
+//uniqueConstraints = @UniqueConstraint(columnNames = "")
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = User.class)
     @JoinTable(name = "china_user_followers",
             joinColumns = @JoinColumn(name = "followers_id"),
