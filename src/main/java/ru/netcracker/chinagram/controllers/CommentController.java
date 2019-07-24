@@ -30,7 +30,7 @@ public class CommentController {
         if (comment != null) {
             return new ResponseEntity<>(comment, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -40,7 +40,7 @@ public class CommentController {
         if (photo != null) {
             return new ResponseEntity<>(photo.getComments(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -51,7 +51,7 @@ public class CommentController {
             User user = comment.getUser();
             return new ResponseEntity<>(user, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -61,7 +61,7 @@ public class CommentController {
         if (photo != null) {
             return new ResponseEntity<> (photo.getComments().size(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -73,7 +73,7 @@ public class CommentController {
             chinaDAO.merge(comment);
             return new ResponseEntity<>(comment, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -84,7 +84,7 @@ public class CommentController {
             chinaDAO.remove(comment);
             return new ResponseEntity<>(HttpStatus.GONE);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }

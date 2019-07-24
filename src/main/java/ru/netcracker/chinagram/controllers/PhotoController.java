@@ -27,7 +27,7 @@ public class PhotoController {
         if (photo != null) {
             return new ResponseEntity<>(photo, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -38,7 +38,7 @@ public class PhotoController {
             User user = photo.getUser();
             return new ResponseEntity<>(user, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -49,7 +49,7 @@ public class PhotoController {
             chinaDAO.remove(photo);
             return new ResponseEntity<>(HttpStatus.GONE);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -61,7 +61,7 @@ public class PhotoController {
             chinaDAO.merge(photo);
             return new ResponseEntity<>(photo, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }
