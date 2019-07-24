@@ -50,9 +50,6 @@ public class ChinaDAOImpl implements ChinaDAO {
     }
 
     @Transactional
-    public <T extends AbstractEntity> void persist(T object) {
-        entityManager.persist(object);
-    }
-
+    public <T extends AbstractEntity> void persist(T object) { entityManager.persist(object); }
 
 }
