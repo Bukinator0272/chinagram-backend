@@ -45,7 +45,7 @@ public class LikeController {
             for (int i=0; i<photo.getLikes().size(); ++i){
                 users.add(photo.getLikes().get(i).getUser());
             }
-            return new ResponseEntity<>(users, HttpStatus.OK);
+            return new ResponseEntity<ArrayList<User>>(users, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
