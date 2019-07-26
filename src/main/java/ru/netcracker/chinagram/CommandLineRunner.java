@@ -6,8 +6,7 @@ import ru.netcracker.chinagram.model.Like;
 import ru.netcracker.chinagram.model.Comment;
 import ru.netcracker.chinagram.model.Photo;
 import ru.netcracker.chinagram.model.User;
-import ru.netcracker.chinagram.repositories.ChinaDAO;
-import ru.netcracker.chinagram.repositories.UserRepository;
+import ru.netcracker.chinagram.services.interfaces.ChinaDAO;
 
 import java.util.Random;
 
@@ -15,11 +14,7 @@ import java.util.Random;
 public class CommandLineRunner implements org.springframework.boot.CommandLineRunner {
 
     @Autowired
-    UserRepository userRepository;
-
-    @Autowired
     ChinaDAO chinaDAO;
-
 
     @Override
     public void run(String... arg0) {

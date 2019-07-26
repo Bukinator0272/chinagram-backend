@@ -11,58 +11,67 @@ import ru.netcracker.chinagram.services.interfaces.ChinaDAO;
 import java.util.UUID;
 
 @RestController
+@RequestMapping("/photos")
 public class PhotoController {
 
     @Autowired
     private ChinaDAO chinaDAO;
 
-    @PostMapping("/photos")
-    public ResponseEntity<Photo> createPhoto(@RequestBody Photo photo) {
-        chinaDAO.persist(photo);
-        return new ResponseEntity<>(photo, HttpStatus.OK);
-    }
-
-    @GetMapping("/photos/{photoId}")
-    public ResponseEntity<Photo> getPhotoById(@PathVariable String photoId) {
+    @GetMapping("/{photoId}")
+    public ResponseEntity<Photo> getPhotoById(@PathVariable String photoId) { //working
         Photo photo = chinaDAO.get(Photo.class, UUID.fromString(photoId));
         if (photo != null) {
             return new ResponseEntity<>(photo, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
-    @GetMapping("/photos/user/{photoId}")
-    public ResponseEntity<User> getUserByPhotoId(@PathVariable String photoId) {
+    @PostMapping("/create/{userId}")
+    public ResponseEntity<Photo> createPhotoByUserId(@PathVariable String userId, @RequestBody String image) { //working
+        User user = chinaDAO.get(User.class, UUID.fromString(userId));
+        if (user != null) {
+            Photo photo = new Photo();
+            photo.setUser(user);
+            photo.setImage(image);
+            chinaDAO.persist(photo);
+            return new ResponseEntity<>(photo, HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/user/{photoId}")
+    public ResponseEntity<User> getUserByPhotoId(@PathVariable String photoId) { //working
         Photo photo = chinaDAO.get(Photo.class, UUID.fromString(photoId));
         if (photo != null) {
             User user = photo.getUser();
             return new ResponseEntity<>(user, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
-    @DeleteMapping("/photos/remove/{photoId}")
-    public ResponseEntity<Photo> removePhotoById(@PathVariable String photoId) {
+    @DeleteMapping("/remove/{photoId}")
+    public ResponseEntity<Photo> removePhotoById(@PathVariable String photoId) { //not working
         Photo photo = chinaDAO.get(Photo.class, UUID.fromString(photoId));
         if (photo != null) {
             chinaDAO.remove(photo);
-            return new ResponseEntity<>(HttpStatus.GONE);
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
-    @PutMapping("photos/update/{photoId}")
-    public ResponseEntity<Photo> updatePhotoById(@PathVariable String photoId, @RequestBody String updatePhoto) {
+    @PutMapping("/update/{photoId}")
+    public ResponseEntity<Photo> updatePhotoById(@PathVariable String photoId, @RequestBody String updatePhoto) { //working
         Photo photo = chinaDAO.get(Photo.class, UUID.fromString(photoId));
         if (photo != null) {
             photo.setImage(updatePhoto);
             chinaDAO.merge(photo);
             return new ResponseEntity<>(photo, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 }

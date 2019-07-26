@@ -13,19 +13,29 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 @RestController
+@RequestMapping("/likes")
 public class LikeController {
 
     @Autowired
     private ChinaDAO chinaDAO;
 
-    @PostMapping("/likes")
-    public ResponseEntity<Like> createLike(@RequestBody Like like) {
-        chinaDAO.persist(like);
-        return new ResponseEntity<>(like, HttpStatus.CREATED);
+    @DeleteMapping("/remove/{photoId}/{userId}") //прям ну должен работать, доходит до HttpStatus.OK, но не удаляет
+    public ResponseEntity removeLikeByIdPhotoUser(@PathVariable String photoId, @PathVariable String userId) { //not working
+        Photo photo = chinaDAO.get(Photo.class, UUID.fromString(photoId));
+        User user = chinaDAO.get(User.class, UUID.fromString(userId));
+        if (photo != null && user != null) {
+            for (int i = 0; i < photo.getLikes().size(); ++i) {
+                if (photo.getLikes().get(i).getUser().getId() == user.getId()) {
+                    chinaDAO.remove(photo.getLikes().get(i));
+                    return new ResponseEntity<>(HttpStatus.OK);
+                }
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @DeleteMapping("/likes/delete/{photoId}/{userId}")
-    public ResponseEntity<Like> createLike(@PathVariable String photoId, @PathVariable String userId) {
+    @PostMapping("/create/{photoId}/{userId}")
+    public ResponseEntity<Like> createLikeByIdPhotoUser(@PathVariable String photoId, @PathVariable String userId) { //working
         Photo photo = chinaDAO.get(Photo.class, UUID.fromString(photoId));
         User user = chinaDAO.get(User.class, UUID.fromString(userId));
         if (photo != null && user != null) {
@@ -33,12 +43,12 @@ public class LikeController {
             chinaDAO.persist(like);
             return new ResponseEntity<>(like, HttpStatus.CREATED);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
-    @GetMapping(path = "/likes/photo/users/{photoID}")
-    public ResponseEntity<ArrayList<User>> getListLikeByPhotoID(@PathVariable String photoID) {
+    @GetMapping("/photo/users/{photoID}")
+    public ResponseEntity<ArrayList<User>> getListLikeByPhotoID(@PathVariable String photoID) { //working
         Photo photo = chinaDAO.get(Photo.class, UUID.fromString(photoID));
         if (photo != null) {
             ArrayList<User> users = new ArrayList<>();
@@ -47,49 +57,49 @@ public class LikeController {
             }
             return new ResponseEntity<ArrayList<User>>(users, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
-    @GetMapping(path = "/likes/{likeId}")
-    public ResponseEntity<Like> getLikeById(@PathVariable String likeId) {
+    @GetMapping("/{likeId}")
+    public ResponseEntity<Like> getLikeById(@PathVariable String likeId) { //working
         Like like = chinaDAO.get(Like.class, UUID.fromString(likeId));
         if (like != null) {
             return new ResponseEntity<>(like, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
-    @GetMapping(path = "/count/likes/{photoId}")
-    public ResponseEntity<Integer> getAmountOfLikesByPhotoId(@PathVariable String photoId) {
+    @GetMapping("/count/{photoId}")
+    public ResponseEntity<Integer> getAmountOfLikesByPhotoId(@PathVariable String photoId) { //working
         Photo photo = chinaDAO.get(Photo.class, UUID.fromString(photoId));
         if (photo != null) {
             return new ResponseEntity<>(photo.getLikes().size(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
-    @GetMapping(path = "/likes/user/{likeId}")
-    public ResponseEntity<User> getUserByLikeId(@PathVariable String likeId) {
+    @GetMapping("/user/{likeId}")
+    public ResponseEntity<User> getUserByLikeId(@PathVariable String likeId) { //working
         Like like = chinaDAO.get(Like.class, UUID.fromString(likeId));
         if (like != null) {
             User user = like.getUser();
-            return new ResponseEntity<>(user, HttpStatus.GONE);
+            return new ResponseEntity<>(user, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
-    @DeleteMapping("/likes/remove/{likeId}")
-    public ResponseEntity<Like> removeLikeById(@PathVariable String likeId) {
+    @DeleteMapping("/remove/{likeId}")
+    public ResponseEntity<Like> removeLikeById(@PathVariable String likeId) { //not working
         Like like = chinaDAO.get(Like.class, UUID.fromString(likeId));
         if (like != null) {
             chinaDAO.remove(like);
-            return new ResponseEntity<>(HttpStatus.GONE);
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 }

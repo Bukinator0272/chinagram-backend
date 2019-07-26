@@ -13,78 +13,101 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@RequestMapping("/comments")
 public class CommentController {
 
     @Autowired
     private ChinaDAO chinaDAO;
 
-    @PostMapping("/comments")
-    public ResponseEntity<Comment> createComment(@RequestBody Comment comment) {
-        chinaDAO.persist(comment);
-        return new ResponseEntity<>(comment, HttpStatus.CREATED);
-    }
-
-    @GetMapping("/comments/{commentId}")
-    public ResponseEntity<Comment> getComment(@PathVariable String commentId) {
+    @GetMapping("/{commentId}")
+    public ResponseEntity<Comment> getComment(@PathVariable String commentId) { //working
         Comment comment = chinaDAO.get(Comment.class, UUID.fromString(commentId));
         if (comment != null) {
             return new ResponseEntity<>(comment, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
-    @GetMapping(path = "/comments/photo/users/{photoId}")
-    public ResponseEntity<List<Comment>> getListCommentByPhotoId(@PathVariable String photoId) {
+    @PostMapping("/create/{photoId}/{userId}")
+    public ResponseEntity<Comment> createCommentByIdPhotoUser(@PathVariable String photoId, @PathVariable String userId, @RequestBody String content) { //working
+        Photo photo = chinaDAO.get(Photo.class, UUID.fromString(photoId));
+        User user = chinaDAO.get(User.class, UUID.fromString(userId));
+        if (photo != null && user != null) {
+            Comment comment = new Comment(content, photo, user);
+            chinaDAO.persist(comment);
+            return new ResponseEntity<>(comment, HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/remove/{photoId}/{userId}")
+    public ResponseEntity removeCommentByIdPhotoUser(@PathVariable String photoId, @PathVariable String userId) { //not working
+        Photo photo = chinaDAO.get(Photo.class, UUID.fromString(photoId));
+        User user = chinaDAO.get(User.class, UUID.fromString(userId));
+        if (photo != null && user != null) {
+            for (int i = 0; i < photo.getComments().size(); ++i) {
+                if (photo.getComments().get(i).getUser().getId() == user.getId()) {
+                    chinaDAO.remove(photo.getComments().get(i));
+                    return new ResponseEntity<>(HttpStatus.OK);
+                }
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping(path = "/photo/users/{photoId}")
+    public ResponseEntity<List<Comment>> getListCommentByPhotoId(@PathVariable String photoId) { //working
         Photo photo = chinaDAO.get(Photo.class, UUID.fromString(photoId));
         if (photo != null) {
             return new ResponseEntity<>(photo.getComments(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
-    @GetMapping("/comments/user/{userId}")
-    public ResponseEntity<User> getUserByCommentId(@PathVariable String userId) {
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<User> getUserByCommentId(@PathVariable String userId) { //working
         Comment comment = chinaDAO.get(Comment.class, UUID.fromString(userId));
         if (comment != null) {
             User user = comment.getUser();
             return new ResponseEntity<>(user, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
-    @GetMapping("/count/comments/{photoId}")
-    public ResponseEntity<Integer> getAmountOfCommentsByPhotoId(@PathVariable String photoId) {
+    @GetMapping("/count/{photoId}")
+    public ResponseEntity<Integer> getAmountOfCommentsByPhotoId(@PathVariable String photoId) { //working
         Photo photo = chinaDAO.get(Photo.class, UUID.fromString(photoId));
         if (photo != null) {
             return new ResponseEntity<>(photo.getComments().size(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
-    @PutMapping("/comments/update/{commentId}")
-    public ResponseEntity<Comment> updateCommentById(@PathVariable String commentId, @RequestBody String updateContent) {
+    @PutMapping("/update/{commentId}")
+    public ResponseEntity<Comment> updateCommentById(@PathVariable String commentId, @RequestBody String updateContent) { //working
         Comment comment = chinaDAO.get(Comment.class, UUID.fromString(commentId));
         if (comment != null) {
             comment.setContent(updateContent);
             chinaDAO.merge(comment);
             return new ResponseEntity<>(comment, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
-    @DeleteMapping("/comments/remove/{commentId}")
-    public ResponseEntity<Comment> removeCommentById(@PathVariable String commentId) {
+    @DeleteMapping("/remove/{commentId}")
+    public ResponseEntity<Comment> removeCommentById(@PathVariable String commentId) { //not working
         Comment comment = chinaDAO.get(Comment.class, UUID.fromString(commentId));
         if (comment != null) {
             chinaDAO.remove(comment);
-            return new ResponseEntity<>(HttpStatus.GONE);
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 }
