@@ -26,10 +26,10 @@ public class FeedController {
     @GetMapping("/{userId}")
     public ResponseEntity<Page<Photo>> getFeed(Pageable pageable, @PathVariable @NotNull String userId) {
         User user = chinaDAO.get(User.class, UUID.fromString(userId));
-        if (user != null) {
+        if (user != null && user.getFollowing() != null) {
             List<Photo> feed = new ArrayList<>();
-            feed.sort(Comparator.comparing(AbstractEntity::getDate).reversed());
             user.getFollowing().forEach(e -> feed.addAll(e.getPhotos()));
+            feed.sort(Comparator.comparing(AbstractEntity::getDate).reversed());
             Page<Photo> photoPage = new PageImpl<>(feed, pageable, feed.size());
             return new ResponseEntity(photoPage, HttpStatus.OK);
         } else {
@@ -41,7 +41,7 @@ public class FeedController {
     @GetMapping("/test/{userId}")
     public ResponseEntity<List<Photo>> getFeed(@PathVariable String userId) {
         User user = chinaDAO.get(User.class, UUID.fromString(userId));
-        if (user != null) {
+        if (user != null && user.getFollowing() != null) {
             List<Photo> feed = new ArrayList<>();
             feed.sort(Comparator.comparing(AbstractEntity::getDate).reversed());
             user.getFollowing().forEach(e -> feed.addAll(e.getPhotos()));
