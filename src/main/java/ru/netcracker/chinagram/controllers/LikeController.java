@@ -43,7 +43,7 @@ public class LikeController {
             chinaDAO.persist(like);
             return new ResponseEntity<>(like, HttpStatus.CREATED);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -57,7 +57,7 @@ public class LikeController {
             }
             return new ResponseEntity<ArrayList<User>>(users, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -67,7 +67,7 @@ public class LikeController {
         if (like != null) {
             return new ResponseEntity<>(like, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -77,7 +77,7 @@ public class LikeController {
         if (photo != null) {
             return new ResponseEntity<>(photo.getLikes().size(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -88,7 +88,7 @@ public class LikeController {
             User user = like.getUser();
             return new ResponseEntity<>(user, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -99,7 +99,7 @@ public class LikeController {
             chinaDAO.remove(like);
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 }

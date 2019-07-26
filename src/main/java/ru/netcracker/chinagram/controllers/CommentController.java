@@ -25,7 +25,7 @@ public class CommentController {
         if (comment != null) {
             return new ResponseEntity<>(comment, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -38,7 +38,7 @@ public class CommentController {
             chinaDAO.persist(comment);
             return new ResponseEntity<>(comment, HttpStatus.CREATED);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -63,7 +63,7 @@ public class CommentController {
         if (photo != null) {
             return new ResponseEntity<>(photo.getComments(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -74,7 +74,7 @@ public class CommentController {
             User user = comment.getUser();
             return new ResponseEntity<>(user, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -84,7 +84,7 @@ public class CommentController {
         if (photo != null) {
             return new ResponseEntity<>(photo.getComments().size(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -96,7 +96,7 @@ public class CommentController {
             chinaDAO.merge(comment);
             return new ResponseEntity<>(comment, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -107,7 +107,7 @@ public class CommentController {
             chinaDAO.remove(comment);
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 }
