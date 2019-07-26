@@ -59,7 +59,7 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/users/remove/{userId}")
+    @DeleteMapping("/users/{userId}")
     public ResponseEntity removeUserById(@PathVariable String userId) {
         User user = chinaDAO.get(User.class, UUID.fromString(userId));
         if (user != null) {
