@@ -34,10 +34,10 @@ public class User extends AbstractEntity {
 
     @ManyToMany(fetch = FetchType.LAZY)
     private List<User> followers = new ArrayList<>();
-
-    //uniqueConstraints = @UniqueConstraint(columnNames = "")
+    
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = User.class)
     @JoinTable(name = "china_user_followers",
+            uniqueConstraints = @UniqueConstraint(columnNames = {"followers_id", "user_id"}),
             joinColumns = @JoinColumn(name = "followers_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> following = new ArrayList<>();
