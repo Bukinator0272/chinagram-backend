@@ -4,10 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.netcracker.chinagram.exceptions.UserNotFoundException;
 import ru.netcracker.chinagram.model.User;
-import ru.netcracker.chinagram.repositories.ChinaDAO;
-import ru.netcracker.chinagram.repositories.UserService;
+import ru.netcracker.chinagram.services.interfaces.ChinaDAO;
+import ru.netcracker.chinagram.services.interfaces.UserService;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,7 +40,7 @@ public class UserController {
     }
 
     @GetMapping(path = "/users/{userId}")
-    public ResponseEntity<User> getUserById(@PathVariable String userId) throws UserNotFoundException {
+    public ResponseEntity<User> getUserById(@PathVariable String userId) {
         User user = chinaDAO.get(User.class, UUID.fromString(userId));
         if (user != null) {
             return new ResponseEntity<>(user, HttpStatus.OK);

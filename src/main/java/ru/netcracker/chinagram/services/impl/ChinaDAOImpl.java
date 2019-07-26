@@ -1,8 +1,9 @@
-package ru.netcracker.chinagram.repositories;
+package ru.netcracker.chinagram.services.impl;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.netcracker.chinagram.model.AbstractEntity;
+import ru.netcracker.chinagram.services.interfaces.ChinaDAO;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -31,7 +32,12 @@ public class ChinaDAOImpl implements ChinaDAO {
 
     @Transactional
     public <T extends AbstractEntity> T get(Class<T> clazz, String field, Object value) {
-        return findAllByField(clazz, field, value).get(0);
+        List<T> result = findAllByField(clazz, field, value);
+        if (!result.isEmpty()) {
+            return result.get(0);
+        } else {
+            return null;
+        }
     }
 
     @Transactional
@@ -50,6 +56,8 @@ public class ChinaDAOImpl implements ChinaDAO {
     }
 
     @Transactional
-    public <T extends AbstractEntity> void persist(T object) { entityManager.persist(object); }
+    public <T extends AbstractEntity> void persist(T object) {
+        entityManager.persist(object);
+    }
 
 }

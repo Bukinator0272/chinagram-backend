@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.netcracker.chinagram.model.Comment;
 import ru.netcracker.chinagram.model.Photo;
 import ru.netcracker.chinagram.model.User;
-import ru.netcracker.chinagram.repositories.ChinaDAO;
+import ru.netcracker.chinagram.services.interfaces.ChinaDAO;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,7 +16,7 @@ import java.util.UUID;
 public class CommentController {
 
     @Autowired
-    ChinaDAO chinaDAO;
+    private ChinaDAO chinaDAO;
 
     @PostMapping("/comments")
     public ResponseEntity<Comment> createComment(@RequestBody Comment comment) {
@@ -25,8 +25,8 @@ public class CommentController {
     }
 
     @GetMapping("/comments/{commentId}")
-    public ResponseEntity<Comment> getComment (@PathVariable String commentId) {
-        Comment comment= chinaDAO.get(Comment.class, UUID.fromString(commentId));
+    public ResponseEntity<Comment> getComment(@PathVariable String commentId) {
+        Comment comment = chinaDAO.get(Comment.class, UUID.fromString(commentId));
         if (comment != null) {
             return new ResponseEntity<>(comment, HttpStatus.OK);
         } else {
@@ -34,8 +34,8 @@ public class CommentController {
         }
     }
 
-    @GetMapping (path = "/comments/photo/users/{photoId}")
-    public ResponseEntity<List<Comment>> getListCommentByPhotoId (@PathVariable String photoId) {
+    @GetMapping(path = "/comments/photo/users/{photoId}")
+    public ResponseEntity<List<Comment>> getListCommentByPhotoId(@PathVariable String photoId) {
         Photo photo = chinaDAO.get(Photo.class, UUID.fromString(photoId));
         if (photo != null) {
             return new ResponseEntity<>(photo.getComments(), HttpStatus.OK);
@@ -45,7 +45,7 @@ public class CommentController {
     }
 
     @GetMapping("/comments/user/{userId}")
-    public ResponseEntity <User> getUserByCommentId (@PathVariable String userId) {
+    public ResponseEntity<User> getUserByCommentId(@PathVariable String userId) {
         Comment comment = chinaDAO.get(Comment.class, UUID.fromString(userId));
         if (comment != null) {
             User user = comment.getUser();
@@ -55,18 +55,18 @@ public class CommentController {
         }
     }
 
-    @GetMapping ("/count/comments/{photoId}")
+    @GetMapping("/count/comments/{photoId}")
     public ResponseEntity<Integer> getAmountOfCommentsByPhotoId(@PathVariable String photoId) {
         Photo photo = chinaDAO.get(Photo.class, UUID.fromString(photoId));
         if (photo != null) {
-            return new ResponseEntity<> (photo.getComments().size(), HttpStatus.OK);
+            return new ResponseEntity<>(photo.getComments().size(), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @PutMapping ("/comments/update/{commentId}")
-    public ResponseEntity<Comment> updateCommentById (@PathVariable String commentId, @RequestBody String updateContent) {
+    @PutMapping("/comments/update/{commentId}")
+    public ResponseEntity<Comment> updateCommentById(@PathVariable String commentId, @RequestBody String updateContent) {
         Comment comment = chinaDAO.get(Comment.class, UUID.fromString(commentId));
         if (comment != null) {
             comment.setContent(updateContent);
@@ -78,7 +78,7 @@ public class CommentController {
     }
 
     @DeleteMapping("/comments/remove/{commentId}")
-    public ResponseEntity<Comment> removeCommentById (@PathVariable String commentId) {
+    public ResponseEntity<Comment> removeCommentById(@PathVariable String commentId) {
         Comment comment = chinaDAO.get(Comment.class, UUID.fromString(commentId));
         if (comment != null) {
             chinaDAO.remove(comment);

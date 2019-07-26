@@ -1,14 +1,15 @@
-package ru.netcracker.chinagram.repositories;
+package ru.netcracker.chinagram.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.netcracker.chinagram.model.User;
+import ru.netcracker.chinagram.services.interfaces.ChinaDAO;
+import ru.netcracker.chinagram.services.interfaces.UserService;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
-public class UserService {
+public class UserServiceImpl implements UserService {
 
     @Autowired
     private ChinaDAO chinaDAO;
@@ -20,7 +21,7 @@ public class UserService {
     }
 
     public Optional<User> getFollowingUser(User user, String followingId) {
-       return user.getFollowing().stream().filter(e -> e.getId().toString()
+        return user.getFollowing().stream().filter(e -> e.getId().toString()
                 .equals(followingId)).findFirst();
 
     }

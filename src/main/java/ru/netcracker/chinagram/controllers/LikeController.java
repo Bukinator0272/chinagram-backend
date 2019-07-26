@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.netcracker.chinagram.model.Like;
 import ru.netcracker.chinagram.model.Photo;
 import ru.netcracker.chinagram.model.User;
-import ru.netcracker.chinagram.repositories.ChinaDAO;
+import ru.netcracker.chinagram.services.interfaces.ChinaDAO;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -16,15 +16,15 @@ import java.util.UUID;
 public class LikeController {
 
     @Autowired
-    ChinaDAO chinaDAO;
+    private ChinaDAO chinaDAO;
 
-    @PostMapping ("/likes")
+    @PostMapping("/likes")
     public ResponseEntity<Like> createLike(@RequestBody Like like) {
         chinaDAO.persist(like);
         return new ResponseEntity<>(like, HttpStatus.CREATED);
     }
 
-    @DeleteMapping ("/likes/delete/{photoId}/{userId}")
+    @DeleteMapping("/likes/delete/{photoId}/{userId}")
     public ResponseEntity<Like> createLike(@PathVariable String photoId, @PathVariable String userId) {
         Photo photo = chinaDAO.get(Photo.class, UUID.fromString(photoId));
         User user = chinaDAO.get(User.class, UUID.fromString(userId));
@@ -37,12 +37,12 @@ public class LikeController {
         }
     }
 
-    @GetMapping (path = "/likes/photo/users/{photoID}")
-    public ResponseEntity<ArrayList<User>> getListLikeByPhotoID (@PathVariable String photoID) {
+    @GetMapping(path = "/likes/photo/users/{photoID}")
+    public ResponseEntity<ArrayList<User>> getListLikeByPhotoID(@PathVariable String photoID) {
         Photo photo = chinaDAO.get(Photo.class, UUID.fromString(photoID));
         if (photo != null) {
             ArrayList<User> users = new ArrayList<>();
-            for (int i=0; i<photo.getLikes().size(); ++i){
+            for (int i = 0; i < photo.getLikes().size(); ++i) {
                 users.add(photo.getLikes().get(i).getUser());
             }
             return new ResponseEntity<ArrayList<User>>(users, HttpStatus.OK);
@@ -61,18 +61,18 @@ public class LikeController {
         }
     }
 
-    @GetMapping (path = "/count/likes/{photoId}")
+    @GetMapping(path = "/count/likes/{photoId}")
     public ResponseEntity<Integer> getAmountOfLikesByPhotoId(@PathVariable String photoId) {
         Photo photo = chinaDAO.get(Photo.class, UUID.fromString(photoId));
         if (photo != null) {
-            return new ResponseEntity<> (photo.getLikes().size(), HttpStatus.OK);
+            return new ResponseEntity<>(photo.getLikes().size(), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @GetMapping (path = "/likes/user/{likeId}")
-    public ResponseEntity<User> getUserByLikeId (@PathVariable String likeId) {
+    @GetMapping(path = "/likes/user/{likeId}")
+    public ResponseEntity<User> getUserByLikeId(@PathVariable String likeId) {
         Like like = chinaDAO.get(Like.class, UUID.fromString(likeId));
         if (like != null) {
             User user = like.getUser();

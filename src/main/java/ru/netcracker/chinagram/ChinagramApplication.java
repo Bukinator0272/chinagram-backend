@@ -7,9 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class ChinagramApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ChinagramApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(ChinagramApplication.class, args);
+    }
 
 
 }

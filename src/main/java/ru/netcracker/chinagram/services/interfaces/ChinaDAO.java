@@ -1,5 +1,7 @@
-package ru.netcracker.chinagram.repositories;
+package ru.netcracker.chinagram.services.interfaces;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import ru.netcracker.chinagram.model.AbstractEntity;
 
 import java.util.List;

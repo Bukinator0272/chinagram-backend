@@ -1,5 +1,6 @@
 package ru.netcracker.chinagram.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -45,6 +46,7 @@ public class Photo extends AbstractEntity {
         this.user = user;
     }
 
+    @JsonIgnore
     public List<Comment> getComments() {
         return comments;
     }
@@ -53,6 +55,7 @@ public class Photo extends AbstractEntity {
         this.comments = comments;
     }
 
+    @JsonIgnore
     public List<Like> getLikes() {
         return likes;
     }

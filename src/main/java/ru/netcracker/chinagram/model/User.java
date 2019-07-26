@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table (name = "china_user")
+@Table(name = "china_user")
 @NoArgsConstructor
 public class User extends AbstractEntity {
 
@@ -35,7 +35,7 @@ public class User extends AbstractEntity {
     @ManyToMany(fetch = FetchType.LAZY)
     private List<User> followers = new ArrayList<>();
 
-//uniqueConstraints = @UniqueConstraint(columnNames = "")
+    //uniqueConstraints = @UniqueConstraint(columnNames = "")
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = User.class)
     @JoinTable(name = "china_user_followers",
             joinColumns = @JoinColumn(name = "followers_id"),
@@ -43,7 +43,7 @@ public class User extends AbstractEntity {
     private List<User> following = new ArrayList<>();
 
 
-    @OneToMany( cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     @JsonIgnore
     List<Like> likes = new ArrayList<>();
@@ -108,7 +108,6 @@ public class User extends AbstractEntity {
     public void setPhotos(List<Photo> photos) {
         this.photos = photos;
     }
-
 
 
 }
