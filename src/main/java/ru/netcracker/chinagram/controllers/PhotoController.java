@@ -27,7 +27,7 @@ public class PhotoController {
         }
     }
 
-    @PostMapping("/create/{userId}")
+    @PostMapping("/{userId}")
     public ResponseEntity<Photo> createPhotoByUserId(@PathVariable String userId, @RequestBody String image) { //working
         User user = chinaDAO.get(User.class, UUID.fromString(userId));
         if (user != null) {
@@ -52,7 +52,7 @@ public class PhotoController {
         }
     }
 
-    @DeleteMapping("/remove/{photoId}")
+    @DeleteMapping("/{photoId}")
     public ResponseEntity<Photo> removePhotoById(@PathVariable String photoId) { //not working
         Photo photo = chinaDAO.get(Photo.class, UUID.fromString(photoId));
         if (photo != null) {
@@ -63,7 +63,7 @@ public class PhotoController {
         }
     }
 
-    @PutMapping("/update/{photoId}")
+    @PutMapping("/{photoId}")
     public ResponseEntity<Photo> updatePhotoById(@PathVariable String photoId, @RequestBody String updatePhoto) { //working
         Photo photo = chinaDAO.get(Photo.class, UUID.fromString(photoId));
         if (photo != null) {

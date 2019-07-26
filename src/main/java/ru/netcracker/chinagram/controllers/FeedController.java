@@ -36,7 +36,7 @@ public class FeedController {
             user.getFollowing().forEach(e -> feed.addAll(e.getPhotos()));
             feed.sort(Comparator.comparing(AbstractEntity::getDate).reversed());
             Page<Photo> photoPage = new PageImpl<>(feed, pageable, feed.size());
-            return new ResponseEntity(photoPage, HttpStatus.OK);
+            return new ResponseEntity<>(photoPage, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

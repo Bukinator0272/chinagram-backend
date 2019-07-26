@@ -19,7 +19,7 @@ public class LikeController {
     @Autowired
     private ChinaDAO chinaDAO;
 
-    @DeleteMapping("/remove/{photoId}/{userId}") //прям ну должен работать, доходит до HttpStatus.OK, но не удаляет
+    @DeleteMapping("/{photoId}/{userId}")
     public ResponseEntity removeLikeByIdPhotoUser(@PathVariable String photoId, @PathVariable String userId) { //not working
         Photo photo = chinaDAO.get(Photo.class, UUID.fromString(photoId));
         User user = chinaDAO.get(User.class, UUID.fromString(userId));
@@ -34,7 +34,7 @@ public class LikeController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/create/{photoId}/{userId}")
+    @PostMapping("/{photoId}/{userId}")
     public ResponseEntity<Like> createLikeByIdPhotoUser(@PathVariable String photoId, @PathVariable String userId) { //working
         Photo photo = chinaDAO.get(Photo.class, UUID.fromString(photoId));
         User user = chinaDAO.get(User.class, UUID.fromString(userId));
@@ -48,14 +48,14 @@ public class LikeController {
     }
 
     @GetMapping("/photo/users/{photoID}")
-    public ResponseEntity<ArrayList<User>> getListLikeByPhotoID(@PathVariable String photoID) { //working
+    public ResponseEntity<ArrayList<User>> getListLikeUsersByPhotoID(@PathVariable String photoID) { //working
         Photo photo = chinaDAO.get(Photo.class, UUID.fromString(photoID));
         if (photo != null) {
             ArrayList<User> users = new ArrayList<>();
             for (int i = 0; i < photo.getLikes().size(); ++i) {
                 users.add(photo.getLikes().get(i).getUser());
             }
-            return new ResponseEntity<ArrayList<User>>(users, HttpStatus.OK);
+            return new ResponseEntity<>(users, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -92,7 +92,7 @@ public class LikeController {
         }
     }
 
-    @DeleteMapping("/remove/{likeId}")
+    @DeleteMapping("/{likeId}")
     public ResponseEntity<Like> removeLikeById(@PathVariable String likeId) { //not working
         Like like = chinaDAO.get(Like.class, UUID.fromString(likeId));
         if (like != null) {
