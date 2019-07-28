@@ -25,8 +25,8 @@ public class ChinaDAOImpl implements ChinaDAO {
 
     @Transactional
     public <T extends AbstractEntity> List<T> findAllByField(Class<T> clazz, String field, Object value) {
-        Query query = entityManager.createQuery(String.format("from %s where %s = :%s", clazz.getSimpleName(), field, field));
-        query.setParameter(field, value);
+        Query query = entityManager.createQuery(String.format("from %s where %s like :%s", clazz.getSimpleName(), field, field));
+        query.setParameter(field, "%" + value + "%");
         return query.getResultList();
     }
 

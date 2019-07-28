@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.netcracker.chinagram.model.User;
 import ru.netcracker.chinagram.services.interfaces.ChinaDAO;
 import ru.netcracker.chinagram.services.interfaces.UserService;
+import ru.netcracker.chinagram.exceptions.Errors;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,41 +23,54 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/users")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity createUser(@RequestBody User user) {
         if (userService.isValidUser(user)) {
             chinaDAO.persist(user);
             return new ResponseEntity<>(user, HttpStatus.CREATED);
-        } else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else
+            return new ResponseEntity<>(String.format(Errors.USER_IS_NOT_VALID, user.getId(), user.getUsername()),
+                    HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("/users")
-    public ResponseEntity<User> updateUser(@RequestBody User user) {
+    public ResponseEntity updateUser(@RequestBody User user) {
         if (userService.isValidUser(user)) {
             chinaDAO.merge(user);
             return new ResponseEntity<>(user, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(user, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(String.format(Errors.USER_IS_NOT_VALID, user.getId(), user.getUsername()),
+                    HttpStatus.BAD_REQUEST);
         }
     }
 
+
     @GetMapping(path = "/users/{userId}")
-    public ResponseEntity<User> getUserById(@PathVariable String userId) {
+    public ResponseEntity getUserById(@PathVariable String userId) {
         User user = chinaDAO.get(User.class, UUID.fromString(userId));
         if (user != null) {
             return new ResponseEntity<>(user, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(String.format(Errors.USER_WITH_ID_NOT_FOUND, userId),
+                    HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping(path = "/users/by_username/{username}")
-    public ResponseEntity<User> getUserByName(@PathVariable String username) {
+    public ResponseEntity getUserByName(@PathVariable String username) {
         User user = chinaDAO.get(User.class, "username", username);
         if (user != null) {
             return new ResponseEntity<>(user, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(String.format(Errors.USER_WITH_NAME_NOT_FOUND, username),
+                    HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping(path = "/users_list/by_username/{username}")
+    public ResponseEntity getUserListByName(@PathVariable String username) {
+        List<User> users = chinaDAO.findAllByField(User.class, "username", username);
+        return new ResponseEntity<>(users, HttpStatus.OK);
+
     }
 
     @DeleteMapping("/users/{userId}")
@@ -66,29 +80,39 @@ public class UserController {
             chinaDAO.remove(user);
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(String.format(Errors.USER_WITH_ID_NOT_FOUND, userId), HttpStatus.BAD_REQUEST);
         }
     }
 
-    @PutMapping("/follow/{followerId}/{followingId}")
-    public ResponseEntity<List> followUser(@PathVariable String followerId, @PathVariable String followingId) {
+    @PutMapping("/followers/{followerId}/{followingId}")
+    public ResponseEntity followUser(@PathVariable String followerId, @PathVariable String followingId) {
         User followerUser = chinaDAO.get(User.class, UUID.fromString(followerId));
         User followingUser = chinaDAO.get(User.class, UUID.fromString(followingId));
-        if (followerUser != null && followingUser != null
-                && !userService.getFollowingUser(followerUser, followingId).isPresent()) {
-            followerUser.getFollowing().add(followingUser);
-            chinaDAO.merge(followerUser);
-            ResponseEntity<List> responseEntity =
-                    new ResponseEntity(followerUser.getFollowing(), HttpStatus.OK);
-            return responseEntity;
+        if (followerUser != null) {
 
+            if (followingUser != null) {
+                if (!userService.getFollowingUser(followerUser, followingId).isPresent()) {
+                    followerUser.getFollowing().add(followingUser);
+                    chinaDAO.merge(followerUser);
+                    ResponseEntity<List> responseEntity =
+                            new ResponseEntity(followerUser.getFollowing(), HttpStatus.OK);
+                    return responseEntity;
+
+                } else {
+                    return new ResponseEntity<>(String.format(Errors.USER_ALREADY_FOLLOWS_USER_WITH_ID, followerId, followingId), HttpStatus.BAD_REQUEST);
+                }
+            } else {
+                return new ResponseEntity<>(String.format(Errors.USER_WITH_ID_NOT_FOUND, followingId),
+                        HttpStatus.BAD_REQUEST);
+            }
         } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(String.format(Errors.USER_WITH_ID_NOT_FOUND, followerId),
+                    HttpStatus.BAD_REQUEST);
         }
     }
 
-    @PutMapping("/unfollow/{followerId}/{followingId}")
-    public ResponseEntity<List<User>> unfollowUser(@PathVariable String followerId, @PathVariable String followingId) {
+    @DeleteMapping("/followers/{followerId}/{followingId}")
+    public ResponseEntity unfollowUser(@PathVariable String followerId, @PathVariable String followingId) {
         User followerUser = chinaDAO.get(User.class, UUID.fromString(followerId));
         if (followerUser != null) {
             Optional<User> optionalFollowingUser = userService.getFollowingUser(followerUser, followingId);
@@ -103,51 +127,77 @@ public class UserController {
                 return responseEntity;
 
             } else {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(String.format(Errors.USER_DOESNT_FOLLOW_USER_WITH_ID,
+                        followerId, followingId),
+                        HttpStatus.BAD_REQUEST);
             }
 
         } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(String.format(Errors.USER_WITH_ID_NOT_FOUND, followerId),
+                    HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping("/followers/{userId}")
-    public ResponseEntity<List<User>> getFollowers(@PathVariable String userId) {
+    public ResponseEntity getFollowers(@PathVariable String userId) {
         User user = chinaDAO.get(User.class, UUID.fromString(userId));
         if (user != null) {
             return new ResponseEntity<>(user.getFollowers(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(String.format(Errors.USER_WITH_ID_NOT_FOUND, userId),
+                    HttpStatus.BAD_REQUEST);
         }
     }
 
+    @GetMapping("/{followerId}/{followingId}")
+    public ResponseEntity isUserFollowing(@PathVariable String followerId, @PathVariable String followingId) {
+        User followerUser = chinaDAO.get(User.class, UUID.fromString(followerId));
+        User followingUser = chinaDAO.get(User.class, UUID.fromString(followingId));
+        if (followerUser != null) {
+            if (followingUser != null) {
+                Optional<User> optionalUser = userService.getFollowingUser(followerUser, followingId);
+                return new ResponseEntity<>(optionalUser.isPresent(), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(String.format(Errors.USER_WITH_ID_NOT_FOUND, followingId),
+                        HttpStatus.BAD_REQUEST);
+            }
+        } else {
+            return new ResponseEntity<>(String.format(Errors.USER_WITH_ID_NOT_FOUND, followerId),
+                    HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
     @GetMapping("/followings/{userId}")
-    public ResponseEntity<List<User>> getFollowing(@PathVariable String userId) {
+    public ResponseEntity getFollowing(@PathVariable String userId) {
         User user = chinaDAO.get(User.class, UUID.fromString(userId));
         if (user != null) {
             return new ResponseEntity<>(user.getFollowing(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(String.format(Errors.USER_WITH_ID_NOT_FOUND, userId),
+                    HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping("/followers_amount/{userId}")
-    public ResponseEntity<Integer> getAmountOFFollowers(@PathVariable String userId) {
+    public ResponseEntity getAmountOFFollowers(@PathVariable String userId) {
         User user = chinaDAO.get(User.class, UUID.fromString(userId));
         if (user != null) {
             return new ResponseEntity<>(user.getFollowers().size(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(String.format(Errors.USER_WITH_ID_NOT_FOUND, userId),
+                    HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping("/users/followings_amount/{userId}")
-    public ResponseEntity<Integer> getAmountOfFollowings(@PathVariable String userId) {
+    public ResponseEntity getAmountOfFollowings(@PathVariable String userId) {
         User user = chinaDAO.get(User.class, UUID.fromString(userId));
         if (user != null) {
             return new ResponseEntity<>(user.getFollowing().size(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(String.format(Errors.USER_WITH_ID_NOT_FOUND, userId),
+                    HttpStatus.BAD_REQUEST);
         }
     }
 
