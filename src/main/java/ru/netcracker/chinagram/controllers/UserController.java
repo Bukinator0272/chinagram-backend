@@ -1,5 +1,6 @@
 package ru.netcracker.chinagram.controllers;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,8 @@ import java.util.UUID;
 @RestController
 public class UserController {
 
+    private static final Logger log = Logger.getLogger(UserController.class);
+
     @Autowired
     private ChinaDAO chinaDAO;
 
@@ -25,19 +28,24 @@ public class UserController {
     @PostMapping("/users")
     public ResponseEntity createUser(@RequestBody User user) {
         if (userService.isValidUser(user)) {
+            log.info(" User created:\n{\nuser_id: " +user.getId() + "\nuser_date: " +user.getDate()+"\nuser_name: "+user.getUsername()+"\n}\n\n");
             chinaDAO.persist(user);
             return new ResponseEntity<>(user, HttpStatus.CREATED);
-        } else
+        } else {
+            log.error(String.format(Errors.USER_IS_NOT_VALID, user.getId(), user.getUsername()));
             return new ResponseEntity<>(String.format(Errors.USER_IS_NOT_VALID, user.getId(), user.getUsername()),
                     HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("/users")
     public ResponseEntity updateUser(@RequestBody User user) {
         if (userService.isValidUser(user)) {
+            log.info(" User updated:\n{\nuser_id: " +user.getId() + "\nuser_date: " +user.getDate()+"\nuser_name: "+user.getUsername()+"\n}\n\n");
             chinaDAO.merge(user);
             return new ResponseEntity<>(user, HttpStatus.OK);
         } else {
+            log.error("Can not update user: "+String.format(Errors.USER_IS_NOT_VALID, user.getId(), user.getUsername()));
             return new ResponseEntity<>(String.format(Errors.USER_IS_NOT_VALID, user.getId(), user.getUsername()),
                     HttpStatus.BAD_REQUEST);
         }
@@ -77,9 +85,11 @@ public class UserController {
     public ResponseEntity removeUserById(@PathVariable String userId) {
         User user = chinaDAO.get(User.class, UUID.fromString(userId));
         if (user != null) {
+            log.info(" User deleted:\n{\nuser_id: " +user.getId() + "\nuser_date: " +user.getDate()+"\nuser_name: "+user.getUsername()+"\n}\n\n");
             chinaDAO.remove(user);
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
+            log.error("Can not delete user"+(String.format(Errors.USER_WITH_ID_NOT_FOUND, userId)));
             return new ResponseEntity<>(String.format(Errors.USER_WITH_ID_NOT_FOUND, userId), HttpStatus.BAD_REQUEST);
         }
     }
