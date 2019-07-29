@@ -1,5 +1,6 @@
 package ru.netcracker.chinagram.controllers;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,21 +17,27 @@ import java.util.UUID;
 @RequestMapping("/likes")
 public class LikeController {
 
+    private static final Logger log = Logger.getLogger(LikeController.class);
+
     @Autowired
     private ChinaDAO chinaDAO;
 
     @DeleteMapping("/{photoId}/{userId}")
-    public ResponseEntity removeLikeByIdPhotoUser(@PathVariable String photoId, @PathVariable String userId) { //not working
+    public ResponseEntity removeLikeByIdPhotoUser(@PathVariable String photoId, @PathVariable String userId) {
         Photo photo = chinaDAO.get(Photo.class, UUID.fromString(photoId));
         User user = chinaDAO.get(User.class, UUID.fromString(userId));
         if (photo != null && user != null) {
             for (int i = 0; i < photo.getLikes().size(); ++i) {
                 if (photo.getLikes().get(i).getUser().getId() == user.getId()) {
+                    log.info(" Like deleted:\n{\nuser_id: " +user.getId() +"\nuser_name: "+user.getUsername()+"\nPhoto_id: "+
+                            photo.getId()+"\n}\n\n");
                     chinaDAO.remove(photo.getLikes().get(i));
                     return new ResponseEntity<>(HttpStatus.OK);
                 }
             }
         }
+        log.error(" Can not delete like:\n{\nuser_id: " +userId +"\nuser_name: "+"\nPhoto_id: "+
+                photoId+  "\n}\n\n");
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
@@ -40,9 +47,13 @@ public class LikeController {
         User user = chinaDAO.get(User.class, UUID.fromString(userId));
         if (photo != null && user != null) {
             Like like = new Like(photo, user);
+            log.info(" Like created:\n{\nuser_id: " +user.getId() +"\nuser_name: "+user.getUsername()+"\nPhoto_id: "+
+                    photo.getId()+"\nLike_id: "+like.getId()+"\n}\n\n");
             chinaDAO.persist(like);
             return new ResponseEntity<>(like, HttpStatus.CREATED);
         } else {
+            log.error(" Can not create like:\n{\nuser_id: " +userId +"\nuser_name: "+"\nPhoto_id: "+
+                    photoId+  "\n}\n\n");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -93,14 +104,31 @@ public class LikeController {
     }
 
     @DeleteMapping("/{likeId}")
-    public ResponseEntity<Like> removeLikeById(@PathVariable String likeId) { //not working
+    public ResponseEntity<Like> removeLikeById(@PathVariable String likeId) {
         Like like = chinaDAO.get(Like.class, UUID.fromString(likeId));
         if (like != null) {
+            log.info(" Like deleted:\n{\nuser_id: " +like.getUser().getId() +"\nuser_name: "+like.getUser().getUsername()+"\nPhoto_id: "+
+                    like.getPhoto().getId()+"\nLike_id: "+like.getId()+"\n}\n\n");
             chinaDAO.remove(like);
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
+            log.error("Can not delete like: " + likeId);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+    @GetMapping("/is_like/{userId}/{photoId}")
+    public boolean userLiked(@PathVariable String userId, @PathVariable String photoId)
+    {
+        Photo photo = chinaDAO.get(Photo.class, UUID.fromString(photoId));
+        User user = chinaDAO.get(User.class, UUID.fromString(userId));
+        if (photo != null && user != null) {
+            for (int i = 0; i < photo.getLikes().size(); ++i) {
+                if (photo.getLikes().get(i).getUser().getId() == user.getId()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
 
