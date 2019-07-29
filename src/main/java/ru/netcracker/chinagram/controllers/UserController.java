@@ -68,7 +68,7 @@ public class UserController {
 
     @GetMapping(path = "/users_list/by_username/{username}")
     public ResponseEntity getUserListByName(@PathVariable String username) {
-        List<User> users = chinaDAO.findAllByField(User.class, "username", username);
+        List<User> users = chinaDAO.findAllByFieldLike(User.class, "username", username);
         return new ResponseEntity<>(users, HttpStatus.OK);
 
     }
