@@ -3,8 +3,10 @@ package ru.netcracker.chinagram.model;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 
 @Entity
@@ -13,12 +15,10 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class Like extends AbstractEntity {
 
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
-    @NotNull
+    @ManyToOne(fetch = FetchType.EAGER)
     private Photo photo;
 
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
-    @NotNull
+    @ManyToOne(fetch = FetchType.EAGER)
     private User user;
 
 

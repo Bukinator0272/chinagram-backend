@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.netcracker.chinagram.exceptions.Errors;
 import ru.netcracker.chinagram.model.User;
 import ru.netcracker.chinagram.services.interfaces.ChinaDAO;
 import ru.netcracker.chinagram.services.interfaces.UserService;
-import ru.netcracker.chinagram.exceptions.Errors;
 
 import java.util.List;
 import java.util.Optional;

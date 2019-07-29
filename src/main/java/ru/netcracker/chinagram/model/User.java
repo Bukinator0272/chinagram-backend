@@ -28,7 +28,7 @@ public class User extends AbstractEntity {
 
     private String information;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "user_id")
     List<Photo> photos = new ArrayList<>();
 
@@ -43,12 +43,12 @@ public class User extends AbstractEntity {
     private List<User> following = new ArrayList<>();
 
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "user_id")
     @JsonIgnore
     List<Like> likes = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "user_id")
     @JsonIgnore
     List<Comment> comments = new ArrayList<>();

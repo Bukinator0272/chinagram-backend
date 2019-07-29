@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.netcracker.chinagram.exceptions.Errors;
 import ru.netcracker.chinagram.model.AbstractEntity;
 import ru.netcracker.chinagram.model.Photo;
 import ru.netcracker.chinagram.model.User;
@@ -29,16 +30,20 @@ public class FeedController {
     private ChinaDAO chinaDAO;
 
     @GetMapping("/{userId}")
-    public ResponseEntity<Page<Photo>> getFeed(Pageable pageable, @PathVariable @NotNull String userId) {
+    public ResponseEntity getFeed(Pageable pageable, @PathVariable @NotNull String userId) {
         User user = chinaDAO.get(User.class, UUID.fromString(userId));
-        if (user != null && user.getFollowing() != null) {
-            List<Photo> feed = new ArrayList<>();
-            user.getFollowing().forEach(e -> feed.addAll(e.getPhotos()));
-            feed.sort(Comparator.comparing(AbstractEntity::getDate).reversed());
-            Page<Photo> photoPage = new PageImpl<>(feed, pageable, feed.size());
-            return new ResponseEntity<>(photoPage, HttpStatus.OK);
+        if (user != null) {
+            if (user.getFollowing() != null) {
+                List<Photo> feed = new ArrayList<>();
+                user.getFollowing().forEach(e -> feed.addAll(e.getPhotos()));
+                feed.sort(Comparator.comparing(AbstractEntity::getDate).reversed());
+                Page<Photo> photoPage = new PageImpl<>(feed, pageable, feed.size());
+                return new ResponseEntity<>(photoPage, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("user.getFollowing is null", HttpStatus.OK);
+            }
         } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(String.format(Errors.USER_WITH_ID_NOT_FOUND, userId), HttpStatus.BAD_REQUEST);
         }
     }
 
