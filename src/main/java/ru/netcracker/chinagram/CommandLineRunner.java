@@ -17,7 +17,7 @@ public class CommandLineRunner implements org.springframework.boot.CommandLineRu
     ChinaDAO chinaDAO;
 
     @Override
-    public void run(String... arg0) {
+    public void run(String... arg0) {/**
        String[] array = {"Vasia_", "Ivan_", "Misha_", "Petr_", "Innokentiy_"};
         Random r = new Random();
 
@@ -45,7 +45,7 @@ public class CommandLineRunner implements org.springframework.boot.CommandLineRu
         photo.getComments().add(comment);
         chinaDAO.merge(comment);
 
-
+**/
 
     }
 

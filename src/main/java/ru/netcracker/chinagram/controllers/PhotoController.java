@@ -1,5 +1,6 @@
 package ru.netcracker.chinagram.controllers;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,8 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/photos")
 public class PhotoController {
+
+    private static final Logger log = Logger.getLogger(PhotoController.class);
 
     @Autowired
     private ChinaDAO chinaDAO;
@@ -34,9 +37,11 @@ public class PhotoController {
             Photo photo = new Photo();
             photo.setUser(user);
             photo.setImage(image);
+            log.info(" Photo created:\n{\nuser_id: " +user.getId() + "\nuser_name: "+user.getUsername()+"\nphoto_id: "+photo.getId()+"}\n\n");
             chinaDAO.persist(photo);
             return new ResponseEntity<>(photo, HttpStatus.CREATED);
         } else {
+            log.error("Can not create photo with user_id: " +user.getId() + "user_name: "+user.getUsername());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -53,12 +58,15 @@ public class PhotoController {
     }
 
     @DeleteMapping("/{photoId}")
-    public ResponseEntity<Photo> removePhotoById(@PathVariable String photoId) { //not working
+    public ResponseEntity<Photo> removePhotoById(@PathVariable String photoId) {
         Photo photo = chinaDAO.get(Photo.class, UUID.fromString(photoId));
         if (photo != null) {
+            log.info(" Photo deleted:\n{\nuser_id: " +photo.getUser().getId() + "\nuser_name: "+photo.getUser().getUsername()+
+                    "\nphoto_id: "+"\n}\n\n");
             chinaDAO.remove(photo);
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
+            log.error("Can not delete photo with photo_id: "+photo.getId());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -68,9 +76,12 @@ public class PhotoController {
         Photo photo = chinaDAO.get(Photo.class, UUID.fromString(photoId));
         if (photo != null) {
             photo.setImage(updatePhoto);
+            log.info(" Photo updated:\n{\nuser_id: " +photo.getUser().getId() + "\nuser_name: "+photo.getUser().getUsername()+
+                    "\nphoto_id: "+photo.getId()+"\n}\n\n");
             chinaDAO.merge(photo);
             return new ResponseEntity<>(photo, HttpStatus.OK);
         } else {
+            log.error("Can not update photo with photo_id: "+photo.getId());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd" >
+<log4j:configuration debug="false">
+
+    <appender name="default.console" class="org.apache.log4j.ConsoleAppender">
+        <param name="target" value="System.out" />
+        <param name="threshold" value="debug" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{ISO8601} %-5p [%c{1}] - %m%n" />
+        </layout>
+    </appender>
+
+    <appender name="default.file.user" class="org.apache.log4j.FileAppender">
+        <param name="file" value="user_crud.log" />
+        <param name="append" value="false" />
+        <param name="threshold" value="debug" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{ISO8601} %-5p [%c{1}] - %m%n" />
+        </layout>
+    </appender>
+
+    <appender name="default.file.photo" class="org.apache.log4j.FileAppender">
+        <param name="file" value="photo_crud.log" />
+        <param name="append" value="false" />
+        <param name="threshold" value="debug" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{ISO8601} %-5p [%c{1}] - %m%n" />
+        </layout>
+    </appender>
+
+    <appender name="default.file.comment" class="org.apache.log4j.FileAppender">
+        <param name="file" value="comment_crud.log" />
+        <param name="append" value="false" />
+        <param name="threshold" value="debug" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{ISO8601} %-5p [%c{1}] - %m%n" />
+        </layout>
+    </appender>
+
+    <appender name="default.file.like" class="org.apache.log4j.FileAppender">
+        <param name="file" value="like_crud.log" />
+        <param name="append" value="false" />
+        <param name="threshold" value="debug" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{ISO8601} %-5p [%c{1}] - %m%n" />
+        </layout>
+    </appender>
+
+    <logger name="ru.netcracker.chinagram.controllers.UserController" additivity="false">
+        <level value="debug" />
+        <appender-ref ref="default.file.user" />
+    </logger>
+
+    <logger name="ru.netcracker.chinagram.controllers.PhotoController" additivity="false">
+        <level value="debug" />
+        <appender-ref ref="default.file.photo" />
+    </logger>
+
+    <logger name="ru.netcracker.chinagram.controllers.CommentController" additivity="false">
+        <level value="debug" />
+        <appender-ref ref="default.file.comment" />
+    </logger>
+
+    <logger name="ru.netcracker.chinagram.controllers.LikeController" additivity="false">
+        <level value="debug" />
+        <appender-ref ref="default.file.like" />
+    </logger>
+
+    <root>
+        <priority value="info" />
+        <appender-ref ref="default.console" />
+        <appender-ref ref="default.file.user" />
+    </root>
+</log4j:configuration>

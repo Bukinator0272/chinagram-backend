@@ -3,11 +3,9 @@ package ru.netcracker.chinagram.model;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @AllArgsConstructor
@@ -16,12 +14,10 @@ public class Comment extends AbstractEntity {
 
     private String content;
 
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
-    @NotNull
+    @ManyToOne(fetch = FetchType.EAGER)
     private Photo photo;
 
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
-    @NotNull
+    @ManyToOne(fetch = FetchType.EAGER)
     private User user;
 
     public String getContent() {
