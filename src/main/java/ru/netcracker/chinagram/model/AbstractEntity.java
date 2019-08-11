@@ -1,5 +1,8 @@
 package ru.netcracker.chinagram.model;
 
+import lombok.val;
+
+import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotNull;
@@ -10,13 +13,12 @@ import java.util.UUID;
 public abstract class AbstractEntity {
 
     public AbstractEntity() {
-        this.id = UUID.randomUUID();
         this.date = new Date();
     }
 
     @Id
-    @NotNull
-    protected UUID id;
+    @Column(name = "id", length = 16, unique = true, nullable = false)
+    protected UUID id =   UUID.randomUUID();
 
     @NotNull
     protected Date date;

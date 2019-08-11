@@ -14,11 +14,10 @@ import java.util.List;
 @NoArgsConstructor
 public class Photo extends AbstractEntity {
 
-    @NotNull
-    private String image;
-
     @ManyToOne(fetch = FetchType.EAGER)
     private User user;
+
+    private String description;
 
     @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "photo_id")
@@ -29,12 +28,12 @@ public class Photo extends AbstractEntity {
     private List<Like> likes = new ArrayList<>();
 
 
-    public String getImage() {
-        return image;
+    public String getDescription() {
+        return description;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public User getUser() {

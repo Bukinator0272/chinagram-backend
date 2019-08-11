@@ -13,6 +13,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/photos")
+@CrossOrigin(origins="http://localhost:4200")
 public class PhotoController {
 
     private static final Logger log = Logger.getLogger(PhotoController.class);
@@ -36,7 +37,6 @@ public class PhotoController {
         if (user != null) {
             Photo photo = new Photo();
             photo.setUser(user);
-            photo.setImage(image);
             log.info(" Photo created:\n{\nuser_id: " +user.getId() + "\nuser_name: "+user.getUsername()+"\nphoto_id: "+photo.getId()+"}\n\n");
             chinaDAO.persist(photo);
             return new ResponseEntity<>(photo, HttpStatus.CREATED);
@@ -44,6 +44,12 @@ public class PhotoController {
             log.error("Can not create photo with user_id: " +user.getId() + "user_name: "+user.getUsername());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PostMapping()
+    public ResponseEntity<Photo> createPhoto(@RequestBody Photo photo) { //working
+      chinaDAO.persist(photo);
+        return new ResponseEntity<>(photo, HttpStatus.CREATED);
     }
 
     @GetMapping("/user/{photoId}")
@@ -71,12 +77,10 @@ public class PhotoController {
         }
     }
 
-    @PutMapping("/{photoId}")
-    public ResponseEntity<Photo> updatePhotoById(@PathVariable String photoId, @RequestBody String updatePhoto) { //working
-        Photo photo = chinaDAO.get(Photo.class, UUID.fromString(photoId));
+    @PutMapping()
+    public ResponseEntity<Photo> updatePhoto(@RequestBody Photo photo) { //working
         if (photo != null) {
-            photo.setImage(updatePhoto);
-            log.info(" Photo updated:\n{\nuser_id: " +photo.getUser().getId() + "\nuser_name: "+photo.getUser().getUsername()+
+            log.info(" Photo updated:\n{\nuser_id: " +photo.getUser() +
                     "\nphoto_id: "+photo.getId()+"\n}\n\n");
             chinaDAO.merge(photo);
             return new ResponseEntity<>(photo, HttpStatus.OK);
