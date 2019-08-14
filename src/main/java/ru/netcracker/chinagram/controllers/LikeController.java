@@ -15,6 +15,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/likes")
+@CrossOrigin(origins="http://localhost:4200")
 public class LikeController {
 
     private static final Logger log = Logger.getLogger(LikeController.class);

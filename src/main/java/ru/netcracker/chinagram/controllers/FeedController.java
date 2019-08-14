@@ -1,15 +1,13 @@
 package ru.netcracker.chinagram.controllers;
 
+import jdk.nashorn.internal.objects.annotations.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.netcracker.chinagram.exceptions.Errors;
 import ru.netcracker.chinagram.model.AbstractEntity;
 import ru.netcracker.chinagram.model.Photo;
@@ -24,6 +22,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/feed")
+@CrossOrigin(origins="http://localhost:4200")
 public class FeedController {
 
     @Autowired
@@ -47,6 +46,9 @@ public class FeedController {
         }
     }
 
+    /**
+    тестовые контроллеры
+     **/
 
     @GetMapping("/test/{userId}")
     public ResponseEntity<List<Photo>> getFeed(@PathVariable String userId) {
@@ -60,4 +62,11 @@ public class FeedController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/test")
+    public ResponseEntity<List<Photo>> getFeedListTest(){
+        List<Photo> photos = chinaDAO.findAll(Photo.class);
+        return new ResponseEntity<>(photos, HttpStatus.OK);
+    }
+
 }

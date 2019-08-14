@@ -16,6 +16,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/comments")
+@CrossOrigin(origins="http://localhost:4200")
 public class CommentController {
 
     private static final Logger log = Logger.getLogger(CommentController.class);
