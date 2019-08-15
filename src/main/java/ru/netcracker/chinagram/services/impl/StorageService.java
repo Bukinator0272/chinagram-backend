@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class StorageService {
     private final Path rootLocation = Paths.get("upload-dir");
 
-    public void store(MultipartFile file) {
+    public void store(MultipartFile file) throws IOException {
+        FileUtils.forceMkdir(rootLocation.toFile());
         try {
             Files.copy(file.getInputStream(), this.rootLocation.resolve(file.getOriginalFilename()));
         } catch (Exception e) {
