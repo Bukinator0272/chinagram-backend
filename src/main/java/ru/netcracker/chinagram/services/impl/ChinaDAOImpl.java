@@ -20,7 +20,19 @@ public class ChinaDAOImpl implements ChinaDAO {
 
     @Transactional
     public <T extends AbstractEntity> List<T> findAll(Class<T> clazz) {
-        return entityManager.createQuery("from " + clazz.getSimpleName() + " e").getResultList();
+        return findAll(clazz,null, null);
+    }
+
+    @Transactional
+    public <T extends AbstractEntity> List<T> findAll(Class<T> clazz, Integer from, Integer max) {
+        Query query = entityManager.createQuery("from " + clazz.getSimpleName() + " e");
+        if (from != null) {
+            query.setFirstResult(from);
+        }
+        if (max != null) {
+            query.setMaxResults(max);
+        }
+        return query.getResultList();
     }
 
     @Transactional
@@ -65,6 +77,10 @@ public class ChinaDAOImpl implements ChinaDAO {
     @Transactional
     public <T extends AbstractEntity> void persist(T object) {
         entityManager.persist(object);
+    }
+
+    public <T extends  AbstractEntity> List executeSqlQuery(String sqlQuery, String param, Class<T> clazz, Integer maxResults, Integer firstResult){
+       return entityManager.createNativeQuery(String.format(sqlQuery, param), clazz).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
 
 }
