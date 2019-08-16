@@ -49,7 +49,7 @@ public class FeedController {
         return new ResponseEntity<>(photos, HttpStatus.OK);
     }
 
-    @GetMapping("/test/p")
+    @GetMapping("/test/pageable")
     public ResponseEntity getFeedListTestWithPaging(Pageable pageable) {
         List<Photo> photos = chinaDAO.findAll(Photo.class, pageable);
         return new ResponseEntity<>(photos, HttpStatus.OK);
