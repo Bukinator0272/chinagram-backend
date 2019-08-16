@@ -29,9 +29,10 @@ public class FeedController {
     @GetMapping("/{userId}")
     public ResponseEntity getFeed(Pageable pageable, @PathVariable @NotNull String userId) {
         User user = chinaDAO.get(User.class, UUID.fromString(userId));
+
         if (user != null) {
             return new ResponseEntity<>(
-                    feedService.getPhotoList(user, pageable.getPageSize(), pageable.getPageNumber()),
+                    feedService.getPhotoList(user, pageable),
                     HttpStatus.OK);
         } else {
             return new ResponseEntity<>(String.format(Errors.USER_WITH_ID_NOT_FOUND, userId), HttpStatus.BAD_REQUEST);
@@ -50,7 +51,7 @@ public class FeedController {
 
     @GetMapping("/test/p")
     public ResponseEntity getFeedListTestWithPaging(Pageable pageable) {
-        List<Photo> photos = chinaDAO.findAll(Photo.class, pageable.getPageNumber(), pageable.getPageSize());
+        List<Photo> photos = chinaDAO.findAll(Photo.class, pageable);
         return new ResponseEntity<>(photos, HttpStatus.OK);
     }
 

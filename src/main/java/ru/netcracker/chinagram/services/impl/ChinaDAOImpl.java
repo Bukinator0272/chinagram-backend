@@ -1,5 +1,6 @@
 package ru.netcracker.chinagram.services.impl;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.netcracker.chinagram.model.AbstractEntity;
@@ -20,7 +21,7 @@ public class ChinaDAOImpl implements ChinaDAO {
 
     @Transactional
     public <T extends AbstractEntity> List<T> findAll(Class<T> clazz) {
-        return findAll(clazz,null, null);
+        return findAll(clazz, null, null);
     }
 
     @Transactional
@@ -33,6 +34,12 @@ public class ChinaDAOImpl implements ChinaDAO {
             query.setMaxResults(max);
         }
         return query.getResultList();
+    }
+
+    @Transactional
+    public <T extends AbstractEntity> List<T> findAll(Class<T> clazz, Pageable page) {
+       return  findAll(clazz, toFirstResult(page),
+               page.getPageSize());
     }
 
     @Transactional
@@ -79,8 +86,16 @@ public class ChinaDAOImpl implements ChinaDAO {
         entityManager.persist(object);
     }
 
-    public <T extends  AbstractEntity> List executeSqlQuery(String sqlQuery, String param, Class<T> clazz, Integer maxResults, Integer firstResult){
-       return entityManager.createNativeQuery(String.format(sqlQuery, param), clazz).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    public <T extends AbstractEntity> List executeSqlQuery(String sqlQuery, String param, Class<T> clazz, Integer maxResults, Integer firstResult) {
+        return entityManager.createNativeQuery(String.format(sqlQuery, param), clazz).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    }
+
+    public <T extends AbstractEntity> List executeSqlQuery(String sqlQuery, String param, Class<T> clazz, Pageable page) {
+        return entityManager.createNativeQuery(String.format(sqlQuery, param), clazz).setFirstResult(toFirstResult(page)).setMaxResults(page.getPageSize()).getResultList();
+    }
+
+    private Integer toFirstResult(Pageable page){
+       return  (page.getPageNumber()-1)*page.getPageSize();
     }
 
 }
